@@ -41,12 +41,14 @@ RTL testbench 為 self-checking testbench，會自動比對輸出是否符合預
 | 5 | 1 | 15 | 1 | TODO：simulation 後確認 |
 | 6 | 14 | 6 | 2 | TODO：simulation 後確認 |
 
-本機或工作站模擬指令：
+工作站模擬指令：
 
 ```sh
 cd HW2
 make sim
 ```
+
+`make sim` 使用課程 training package 相同的 VCS flow。若只在本機使用 Icarus Verilog，可改用 `make sim-iverilog`。
 
 預期模擬輸出：
 
@@ -65,6 +67,13 @@ SUMMARY: 6 passed, 0 failed
 ### 1(c). Synthesis 結果
 
 Synthesis script：`scripts/dc_synth.tcl`
+
+此 script 已使用 training package 中的 TSMC90 library 設定：
+
+```text
+/usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/SynopsysDC/db/slow.db
+/usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/SynopsysDC/db/fast.db
+```
 
 請在 EDA 工作站執行：
 
@@ -87,11 +96,26 @@ Synthesis script 會產生以下 gate-level netlist：
 results/netlist/gcd4_syn.v
 ```
 
+可用下列指令對 synthesized netlist 進行 gate-level simulation：
+
+```sh
+cd HW2
+make gate-sim
+```
+
+此 target 會使用 training package 指定的 standard-cell Verilog model：
+
+```text
+/usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v
+```
+
 ## 2. Scan Chain 與 ATPG 測試
 
 ### 2(a). Scan Chain Insertion
 
 Scan insertion script：`scripts/dc_scan.tcl`
+
+此 script 與 synthesis 使用相同的 TSMC90 `slow.db` / `fast.db` library 設定。
 
 請在 synthesis 完成後，於 EDA 工作站執行：
 
@@ -126,6 +150,14 @@ results/netlist/gcd4_scan.v
 ### 2(b). ATPG Fault Coverage
 
 ATPG script template：`scripts/tmax_atpg.tcl`
+
+此 script 已使用 training package 指定的 standard-cell Verilog model：
+
+```text
+/usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v
+```
+
+Training package 中沒有提供 scan/ATPG 範例，因此此處假設工作站可用 Synopsys TetraMAX 指令 `tmax`。若工作站使用的是 TestMAX 或其他 ATPG 執行檔，請用相同 script 內容改以該工具的 shell command 執行。
 
 請在 scan insertion 完成後，於 EDA 工作站執行：
 

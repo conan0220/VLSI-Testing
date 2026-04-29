@@ -9,9 +9,11 @@ file mkdir results/atpg
 set_messages -log results/atpg/tmax.log -replace
 
 set TOP gcd4
+set CELL_VERILOG /usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v
 
-# TODO(workstation): update library/netlist paths for the course environment.
-read_netlist YOUR_STANDARD_CELL_LIBRARY.v -library
+# If the workstation uses Synopsys TestMAX instead of TetraMAX, keep this file
+# as the command reference and run it with the equivalent TestMAX shell command.
+read_netlist $CELL_VERILOG -library
 read_netlist results/netlist/gcd4_scan.v
 run_build_model $TOP
 run_drc results/scan/gcd4_scan.spf
