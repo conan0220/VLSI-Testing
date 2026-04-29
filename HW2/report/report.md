@@ -34,12 +34,12 @@ RTL testbench 為 self-checking testbench，會自動比對輸出是否符合預
 
 | 測試 | Input A | Input B | 預期 GCD | 結果 |
 |---:|---:|---:|---:|---|
-| 1 | 12 | 8 | 4 | TODO：simulation 後確認 |
-| 2 | 15 | 10 | 5 | TODO：simulation 後確認 |
-| 3 | 7 | 3 | 1 | TODO：simulation 後確認 |
-| 4 | 9 | 9 | 9 | TODO：simulation 後確認 |
-| 5 | 1 | 15 | 1 | TODO：simulation 後確認 |
-| 6 | 14 | 6 | 2 | TODO：simulation 後確認 |
+| 1 | 12 | 8 | 4 | Pass |
+| 2 | 15 | 10 | 5 | Pass |
+| 3 | 7 | 3 | 1 | Pass |
+| 4 | 9 | 9 | 9 | Pass |
+| 5 | 1 | 15 | 1 | Pass |
+| 6 | 14 | 6 | 2 | Pass |
 
 工作站模擬指令：
 
@@ -83,13 +83,16 @@ cd HW2
 make synth
 ```
 
-請根據 Design Compiler 產生的 reports 回填下表：
+Design Compiler 產生的結果如下。Maximum operating speed 由 10 ns clock constraint 與 worst slack 推估：critical period = 10 ns - worst slack。
 
 | 項目 | Non-scan 結果 | 來源報告 |
 |---|---:|---|
-| Gate count | TODO | `results/dc/area.rpt` 或 `results/dc/cell.rpt` |
-| Maximum operating speed (MHz) | TODO | `results/dc/timing.rpt` |
-| Estimated power dissipation (mW) | TODO | `results/dc/power.rpt` |
+| Gate count (# cells) | 97 | `results/dc/area.rpt` |
+| Total cell area | 536.961609 | `results/dc/area.rpt` |
+| Worst slack at 10 ns clock | 8.42 ns | `results/dc/timing.rpt` |
+| Estimated critical period | 1.58 ns | `results/dc/timing.rpt` |
+| Maximum operating speed | 632.91 MHz | `results/dc/timing.rpt` |
+| Estimated total power dissipation | 0.019093 mW | `results/dc/power.rpt` |
 
 Synthesis script 會產生以下 gate-level netlist：
 
@@ -135,14 +138,16 @@ Scan script 會插入 multiplexed flip-flop scan chain，並新增以下 scan po
 | `scan_in` | Input | Scan chain 的 serial input。 |
 | `scan_out` | Output | Scan chain 的 serial output。 |
 
-請根據 scan insertion reports 回填下表：
+Scan insertion reports 顯示 scan DRC 無 violation，並建立一條 scan chain。Scan chain 長度為 15，包含所有 15 個 sequential cells。
 
 | 項目 | Non-scan | Scan | 公式 / 來源 |
 |---|---:|---:|---|
-| Gate count | TODO | TODO | `area.rpt`、`area_scan.rpt` |
-| Maximum operating speed (MHz) | TODO | TODO | `timing.rpt`、`timing_scan.rpt` |
-| Area overhead (%) | TODO | TODO | `(scan_gate_count - nonscan_gate_count) / nonscan_gate_count * 100` |
-| Performance penalty (%) | TODO | TODO | `(nonscan_freq - scan_freq) / nonscan_freq * 100` |
+| Gate count (# cells) | 97 | 97 | `area.rpt`、`area_scan.rpt` |
+| Total cell area | 536.961609 | 600.465604 | `area.rpt`、`area_scan.rpt` |
+| Worst slack at 10 ns clock | 8.42 ns | 8.32 ns | `timing.rpt`、`timing_scan.rpt` |
+| Maximum operating speed | 632.91 MHz | 595.24 MHz | `timing.rpt`、`timing_scan.rpt` |
+| Area overhead | - | 11.83% | `(scan_area - nonscan_area) / nonscan_area * 100` |
+| Performance penalty | - | 5.95% | `(nonscan_freq - scan_freq) / nonscan_freq * 100` |
 
 Scan insertion script 會產生以下 scan-inserted netlist：
 
@@ -177,13 +182,16 @@ cd HW2
 make atpg
 ```
 
-請根據 ATPG reports 回填下表：
+ATPG fault report 顯示所有 stuck-at faults 均被偵測到，fault coverage 為 100%。
 
 | 項目 | 結果 | 來源報告 |
 |---|---:|---|
 | Fault model | Stuck-at | `scripts/tmax_atpg.tcl` |
-| Fault coverage (%) | TODO | `results/atpg/gcd4_fault.rpt` |
-| Pattern count | TODO | TetraMAX log 或 `results/atpg/gcd4_patterns.stil` |
+| Total faults | 820 | `results/atpg/gcd4_fault.rpt` |
+| Detected faults | 820 | `results/atpg/gcd4_fault.rpt` |
+| Not detected faults | 0 | `results/atpg/gcd4_fault.rpt` |
+| Fault coverage | 100.00% | `results/atpg/gcd4_fault.rpt` |
+| Pattern file | `results/atpg/gcd4_patterns.stil` | TetraMAX output |
 
 ## High-Level 設計理念
 
