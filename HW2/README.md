@@ -42,9 +42,8 @@ make atpg
 make metrics
 ```
 
-The ATPG target assumes `tmax`. If the workstation provides Synopsys TestMAX
-under another executable name, run the equivalent command with
-`scripts/tmax_atpg.tcl`.
+The ATPG target uses `tmax64` by default. To override it, run for example
+`make atpg ATPG_TOOL=/path/to/tool`.
 
 Copy the reported gate count, timing, power, and fault coverage values into
 `report/report.md`, then export the report and required appendices to a single

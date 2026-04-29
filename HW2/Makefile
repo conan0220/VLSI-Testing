@@ -2,6 +2,7 @@ RTL := rtl/gcd4.v
 TB  := tb/gcd4_tb.v
 CELL_VERILOG := /usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v
 VCS_FLAGS := -full64 -debug_access+all +v2k +neg_tchk
+ATPG_TOOL ?= tmax64
 
 .PHONY: sim sim-iverilog gate-sim synth scan atpg metrics clean
 
@@ -28,7 +29,7 @@ scan:
 
 atpg:
 	mkdir -p results/atpg
-	tmax -shell scripts/tmax_atpg.tcl
+	$(ATPG_TOOL) -shell scripts/tmax_atpg.tcl
 
 metrics:
 	python3 scripts/extract_metrics.py

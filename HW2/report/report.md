@@ -157,7 +157,7 @@ ATPG script template：`scripts/tmax_atpg.tcl`
 /usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v
 ```
 
-Training package 中沒有提供 scan/ATPG 範例，因此此處假設工作站可用 Synopsys TetraMAX 指令 `tmax`。若工作站使用的是 TestMAX 或其他 ATPG 執行檔，請用相同 script 內容改以該工具的 shell command 執行。
+Training package 中沒有提供 scan/ATPG 範例；目前工作站可使用 Synopsys TetraMAX `tmax64`，因此 `make atpg` 預設會以 `tmax64 -shell scripts/tmax_atpg.tcl` 執行。若其他工作站使用不同 ATPG 執行檔，可用 `make atpg ATPG_TOOL=/path/to/tool` 覆寫。
 
 請在 scan insertion 完成後，於 EDA 工作站執行：
 
