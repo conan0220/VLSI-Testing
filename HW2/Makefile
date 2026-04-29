@@ -31,6 +31,12 @@ scan:
 
 atpg:
 	mkdir -p results/atpg
+	@test -n "$$SYNOPSYS" || { \
+		echo "SYNOPSYS is not set. Source the TetraMAX setup first:"; \
+		echo "  source /usr/cadtool/user_setup/08-tmax.csh"; \
+		echo "  source /usr/cad/synopsys/CIC/icc.csh"; \
+		exit 1; \
+	}
 	printf "source scripts/tmax_atpg.tcl\nexit\n" | $(ATPG_TOOL)
 
 metrics:
