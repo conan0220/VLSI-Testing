@@ -78,6 +78,7 @@ Synthesis script：`scripts/dc_synth.tcl`
 請在 EDA 工作站執行：
 
 ```sh
+source /usr/cadtool/user_setup/08-synthesis.csh
 cd HW2
 make synth
 ```
@@ -116,10 +117,12 @@ make gate-sim
 Scan insertion script：`scripts/dc_scan.tcl`
 
 此 script 與 synthesis 使用相同的 TSMC90 `slow.db` / `fast.db` library 設定。
+DFT flow 依照 `2026_DFT_ATPG` 的範例，使用 DFT Compiler (`dc_shell-t`) 插入一條 multiplexed flip-flop scan chain，並輸出 scan test protocol。
 
 請在 synthesis 完成後，於 EDA 工作站執行：
 
 ```sh
+source /usr/cadtool/user_setup/08-synthesis.csh
 cd HW2
 make scan
 ```
@@ -147,6 +150,12 @@ Scan insertion script 會產生以下 scan-inserted netlist：
 results/netlist/gcd4_scan.v
 ```
 
+同時也會產生給 TetraMAX ATPG 使用的 scan protocol：
+
+```text
+results/scan/gcd4_scan.stil
+```
+
 ### 2(b). ATPG Fault Coverage
 
 ATPG script template：`scripts/tmax_atpg.tcl`
@@ -157,11 +166,13 @@ ATPG script template：`scripts/tmax_atpg.tcl`
 /usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v
 ```
 
-Training package 中沒有提供 scan/ATPG 範例；目前工作站可使用 Synopsys TetraMAX `tmax64`，因此 `make atpg` 預設會以 `tmax64 -shell scripts/tmax_atpg.tcl` 執行。若其他工作站使用不同 ATPG 執行檔，可用 `make atpg ATPG_TOOL=/path/to/tool` 覆寫。
+ATPG flow 依照 `2026_DFT_ATPG` 的範例，使用 Synopsys TetraMAX `tmax64`。`make atpg` 會進入 TetraMAX shell，並自動執行 `source scripts/tmax_atpg.tcl`。若其他工作站使用不同 ATPG 執行檔，可用 `make atpg ATPG_TOOL=/path/to/tool` 覆寫。
 
 請在 scan insertion 完成後，於 EDA 工作站執行：
 
 ```sh
+source /usr/cadtool/user_setup/08-tmax.csh
+source /usr/cad/synopsys/CIC/icc.csh
 cd HW2
 make atpg
 ```
@@ -171,8 +182,8 @@ make atpg
 | 項目 | 結果 | 來源報告 |
 |---|---:|---|
 | Fault model | Stuck-at | `scripts/tmax_atpg.tcl` |
-| Fault coverage (%) | TODO | `results/atpg/summary.rpt` 或 `results/atpg/fault_summary.rpt` |
-| Pattern count | TODO | `results/atpg/summary.rpt` |
+| Fault coverage (%) | TODO | `results/atpg/gcd4_fault.rpt` |
+| Pattern count | TODO | TetraMAX log 或 `results/atpg/gcd4_patterns.stil` |
 
 ## High-Level 設計理念
 

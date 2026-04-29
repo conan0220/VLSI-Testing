@@ -17,8 +17,7 @@ REPORTS = [
     Path("results/scan/area_scan.rpt"),
     Path("results/scan/timing_scan.rpt"),
     Path("results/scan/scan_path.rpt"),
-    Path("results/atpg/summary.rpt"),
-    Path("results/atpg/fault_summary.rpt"),
+    Path("results/atpg/gcd4_fault.rpt"),
 ]
 
 KEYWORDS = (

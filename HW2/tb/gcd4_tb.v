@@ -25,6 +25,12 @@ module gcd4_tb;
 
     always #5 clk = ~clk;
 
+`ifdef GATESIM
+    initial begin
+        $sdf_annotate("results/dc/gcd4_syn.sdf", dut);
+    end
+`endif
+
     task run_case;
         input [3:0] a;
         input [3:0] b;

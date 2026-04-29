@@ -30,6 +30,22 @@ The scripts use the TSMC90 paths from `2026_Spring_Training_Package`:
 - DC libraries: `/usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/SynopsysDC/db/slow.db` and `fast.db`
 - Standard-cell Verilog: `/usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v`
 
+The DFT/ATPG flow follows `2026_DFT_ATPG`:
+
+- DFT Compiler: `dc_shell-t`
+- TetraMAX ATPG: `tmax64`, with `source scripts/tmax_atpg.tcl` inside the shell
+- Scan test protocol: `results/scan/gcd4_scan.stil`
+- Fault report: `results/atpg/gcd4_fault.rpt`
+
+Source the course tool setup files before running the flow:
+
+```sh
+source /usr/cadtool/user_setup/08-synthesis.csh
+source /usr/cadtool/user_setup/08-vcs.csh
+source /usr/cadtool/user_setup/08-tmax.csh
+source /usr/cad/synopsys/CIC/icc.csh
+```
+
 Run:
 
 ```sh
@@ -42,8 +58,10 @@ make atpg
 make metrics
 ```
 
-The ATPG target uses `tmax64` by default. To override it, run for example
-`make atpg ATPG_TOOL=/path/to/tool`.
+`make scan` uses `dc_shell-t` by default. `make atpg` uses `tmax64` by default.
+To override either executable, run for example
+`make scan DFT_SHELL=/path/to/dc_shell-t` or
+`make atpg ATPG_TOOL=/path/to/tmax64`.
 
 Copy the reported gate count, timing, power, and fault coverage values into
 `report/report.md`, then export the report and required appendices to a single

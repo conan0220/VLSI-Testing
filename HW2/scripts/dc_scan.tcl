@@ -1,4 +1,4 @@
-# Design Compiler scan insertion script for HW2 GCD.
+# DFT Compiler scan insertion script for HW2 GCD.
 # Run from the HW2 directory after scripts/dc_synth.tcl has produced
 # results/netlist/gcd4_syn.v.
 
@@ -34,7 +34,7 @@ set_output_delay 1.0 -clock clk [all_outputs]
 set_drive 1 [all_inputs]
 set_load [load_of slow/CLKBUFX20/A] [all_outputs]
 
-set_scan_configuration -style multiplexed_flip_flop
+set_scan_configuration -style multiplexed_flip_flop -chain_count 1
 create_port scan_enable -direction in
 create_port scan_in -direction in
 create_port scan_out -direction out
@@ -62,6 +62,6 @@ change_names -hierarchy -rule verilog
 write -format verilog -hierarchy -output results/netlist/gcd4_scan.v
 write_sdc results/scan/gcd4_scan.sdc
 write_sdf -version 2.1 -context verilog -load_delay cell results/scan/gcd4_scan.sdf
-write_test_protocol -output results/scan/gcd4_scan.spf
+write_test_protocol -output results/scan/gcd4_scan.stil
 
 puts "Scan insertion complete. Fill report/report.md with scan area and timing results."
