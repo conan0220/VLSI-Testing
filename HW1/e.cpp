@@ -8,9 +8,6 @@ int eval_good(int A, int C, int D, int E, int F, int G) {
 
 char eval_faulty_open(int A, int C, int D, int E, int F, int G) {
     bool pull_down = A || (C && D) || (E && F && G);
-
-    // E-controlled pMOS open fault:
-    // faulty pull-up = !A * (!C + !D) * (!F + !G)
     bool pull_up = (!A) && ((!C) || (!D)) && ((!F) || (!G));
 
     if (pull_up) return '1';
