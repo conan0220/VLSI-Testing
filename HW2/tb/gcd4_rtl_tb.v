@@ -45,6 +45,7 @@ module testbench;
             #(period) start = 0;
 
             @(posedge done);
+            #(delay);
             if (gcd_out !== expected) begin
                 fail_count = fail_count + 1;
                 $display("FAIL: gcd(%0d,%0d) expected %0d got %0d",
@@ -55,6 +56,7 @@ module testbench;
             end
 
             @(negedge done);
+            @(posedge clk);
         end
     endtask
 
