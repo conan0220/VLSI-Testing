@@ -5,7 +5,8 @@ This directory contains the source package for a 4-bit GCD circuit homework.
 ## Files
 
 - `rtl/gcd4.v`: synthesizable sequential Verilog RTL.
-- `tb/gcd4_tb.v`: self-checking RTL testbench with VCD dump.
+- `tb/gcd4_rtl_tb.v`: RTL testbench adapted from `1.RTL_simulation/testbench.v` with 4-bit inputs.
+- `tb/gcd4_gate_tb.v`: gate-level testbench adapted from `2.Gate_level_simulation/testbench.v` with 4-bit inputs and SDF annotation.
 - `scripts/dc_synth.tcl`: Design Compiler synthesis script.
 - `scripts/dc_scan.tcl`: Design Compiler scan insertion script.
 - `scripts/tmax_atpg.tcl`: TetraMAX ATPG script template.
@@ -20,7 +21,7 @@ cd HW2
 make sim
 ```
 
-The simulation writes `results/gcd4_tb.vcd`. If VCS is not available but
+The simulation writes `results/gcd4_rtl.vcd`. If VCS is not available but
 Icarus Verilog is installed, use `make sim-iverilog`.
 
 ## Workstation Flow

@@ -26,11 +26,12 @@
 設計檔案：
 
 - RTL：`rtl/gcd4.v`
-- Testbench：`tb/gcd4_tb.v`
+- RTL testbench：`tb/gcd4_rtl_tb.v`
+- Gate-level testbench：`tb/gcd4_gate_tb.v`
 
 ### 1(b). RTL 驗證
 
-RTL testbench 為 self-checking testbench，會自動比對輸出是否符合預期結果，並輸出 waveform 檔案 `results/gcd4_tb.vcd`。測試向量包含超過題目要求的三組輸入。
+RTL testbench 依照 `2026_Spring_Training_Package/1.RTL_simulation/testbench.v` 的時序風格撰寫，包含 `period`、`delay`、reset/start sequencing，以及 `@(negedge done)` 的測試流程；資料寬度由範例的 8-bit 調整為 4-bit。此 testbench 仍保留 self-checking，比對輸出是否符合預期結果，並輸出 waveform 檔案 `results/gcd4_rtl.vcd`。測試向量包含超過題目要求的三組輸入。
 
 | 測試 | Input A | Input B | 預期 GCD | 結果 |
 |---:|---:|---:|---:|---|
@@ -62,7 +63,7 @@ PASS: gcd(14,6) = 2
 SUMMARY: 6 passed, 0 failed
 ```
 
-最終 PDF 中需放入 waveform 截圖。請使用 GTKWave、Verdi 或其他 waveform viewer 開啟 `results/gcd4_tb.vcd`，並截取 `clk`、`rst_n`、`start`、`in_a`、`in_b`、`gcd`、`done` 等主要訊號。
+最終 PDF 中需放入 waveform 截圖。請使用 GTKWave、Verdi 或其他 waveform viewer 開啟 `results/gcd4_rtl.vcd`，並截取 `clk`、`rst_n`、`start`、`number1`、`number2`、`gcd_out`、`done` 等主要訊號。
 
 ### 1(c). Synthesis 結果
 
@@ -83,11 +84,12 @@ cd HW2
 make synth
 ```
 
-Design Compiler 產生的結果如下。Maximum operating speed 由 10 ns clock constraint 與 worst slack 推估：critical period = 10 ns - worst slack。
+Design Compiler 產生的結果如下。根據 `2026_DFT_ATPG.pptx`，gate count 使用 `Total cell area / NAND2 gate area` 計算，並無條件進位；本製程的 NAND2 gate area 為 2.8224 um^2。Maximum operating speed 由 10 ns clock constraint 與 worst slack 推估：critical period = 10 ns - worst slack。
 
 | 項目 | Non-scan 結果 | 來源報告 |
 |---|---:|---|
-| Gate count (# cells) | 97 | `results/dc/area.rpt` |
+| Gate count | 191 | `ceil(536.961609 / 2.8224)` |
+| Number of cells | 97 | `results/dc/area.rpt` |
 | Total cell area | 536.961609 | `results/dc/area.rpt` |
 | Worst slack at 10 ns clock | 8.42 ns | `results/dc/timing.rpt` |
 | Estimated critical period | 1.58 ns | `results/dc/timing.rpt` |
@@ -107,7 +109,7 @@ cd HW2
 make gate-sim
 ```
 
-此 target 會使用 training package 指定的 standard-cell Verilog model：
+此 target 使用依照 `2026_Spring_Training_Package/2.Gate_level_simulation/testbench.v` 改寫的 `tb/gcd4_gate_tb.v`，並會對 `results/dc/gcd4_syn.sdf` 做 SDF annotation。資料寬度同樣由範例的 8-bit 調整為 4-bit。此 target 也會使用 training package 指定的 standard-cell Verilog model：
 
 ```text
 /usr/cadtool/ee5216/CBDK_TSMC90GUTM_Arm_f1.0/CIC/Verilog/tsmc090.v
@@ -142,11 +144,12 @@ Scan insertion reports 顯示 scan DRC 無 violation，並建立一條 scan chai
 
 | 項目 | Non-scan | Scan | 公式 / 來源 |
 |---|---:|---:|---|
-| Gate count (# cells) | 97 | 97 | `area.rpt`、`area_scan.rpt` |
+| Gate count | 191 | 213 | `ceil(total_cell_area / 2.8224)` |
+| Number of cells | 97 | 97 | `area.rpt`、`area_scan.rpt` |
 | Total cell area | 536.961609 | 600.465604 | `area.rpt`、`area_scan.rpt` |
 | Worst slack at 10 ns clock | 8.42 ns | 8.32 ns | `timing.rpt`、`timing_scan.rpt` |
 | Maximum operating speed | 632.91 MHz | 595.24 MHz | `timing.rpt`、`timing_scan.rpt` |
-| Area overhead | - | 11.83% | `(scan_area - nonscan_area) / nonscan_area * 100` |
+| Area overhead | - | 11.52% | `(scan_gate_count - nonscan_gate_count) / nonscan_gate_count * 100` |
 | Performance penalty | - | 5.95% | `(nonscan_freq - scan_freq) / nonscan_freq * 100` |
 
 Scan insertion script 會產生以下 scan-inserted netlist：
@@ -205,7 +208,7 @@ ATPG fault report 顯示所有 stuck-at faults 均被偵測到，fault coverage 
 
 ## Appendix B. Testbench
 
-最終合併 PDF 中請放入 `tb/gcd4_tb.v` 的內容。
+最終合併 PDF 中請放入 `tb/gcd4_rtl_tb.v` 與 `tb/gcd4_gate_tb.v` 的內容。
 
 ## Appendix C. Synthesized Netlist
 
